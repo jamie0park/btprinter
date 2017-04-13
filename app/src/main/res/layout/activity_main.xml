@@ -8,7 +8,8 @@
     <Button
         android:id="@+id/go_printer_setting_btn"
         android:text="Go printer setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"/>
 
 </LinearLayout>

@@ -233,6 +233,7 @@ public class DeviceActivity extends BluetoothActivity {
             if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                 init();
                 goPrinterSetting();
+                myApp.mBtDevice = bluetoothDevice;
             } else {
                 Method createBondMethod = BluetoothDevice.class.getMethod("createBond");
                 createBondMethod.invoke(bluetoothDevice);

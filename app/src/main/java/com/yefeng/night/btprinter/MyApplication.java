@@ -28,7 +28,6 @@ public class MyApplication extends Application {
     public static BluetoothAdapter mBtAdapter = null;
     public static BtService mBtService = null;
     public static BluetoothDevice mBtDevice = null;
-    public static boolean isBtAvailable = false;
     /**
      * print queue
      */
@@ -53,10 +52,7 @@ public class MyApplication extends Application {
         mBtService = new BtService(mContext);
         // check available
         if( mBtService.isAvailable() == false ){
-            isBtAvailable = false;
             showToast("Bluetooth is not available");
-        } else {
-            isBtAvailable = true;
         }
     }
 

@@ -1,12 +1,12 @@
 package com.yefeng.night.btprinter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     // application class
     private MyApplication myApp;
@@ -29,6 +29,14 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
+
+//        if (myApp.mBtService.getState() != myApp.mBtService.STATE_CONNECTED) {
+//            if (!TextUtils.isEmpty(myApp.mDefaultPrinter.getMacAddr())) {
+//                myApp.mBtDevice = myApp.mBtAdapter.getRemoteDevice(myApp.mDefaultPrinter.getMacAddr());
+//                myApp.mBtService.connect(myApp.mBtDevice);
+//            }
+//        }
 
     }
 }

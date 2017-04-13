@@ -61,6 +61,13 @@ public class PrinterSettingActivity extends BluetoothActivity {
             @Override
             public void onClick(View view) {
                 printTest();
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                printTest();
             }
         });
 
