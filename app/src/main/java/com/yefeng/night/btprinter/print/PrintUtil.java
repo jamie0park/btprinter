@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.yefeng.night.btprinter.base.AppInfo;
+import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.bt.BtUtil;
 
 import java.util.Set;

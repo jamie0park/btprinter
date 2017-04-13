@@ -1,4 +1,4 @@
-package com.yefeng.night.btprinter.base;
+package com.yefeng.night.btprinter.util;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

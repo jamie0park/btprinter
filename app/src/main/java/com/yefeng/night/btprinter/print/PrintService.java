@@ -55,8 +55,6 @@ public class PrintService extends IntentService {
             bytes.add(GPrinterCommand.reset);
             bytes.add(message.getBytes("gbk"));
             bytes.add(GPrinterCommand.print);
-            bytes.add(GPrinterCommand.print);
-            bytes.add(GPrinterCommand.print);
             PrintQueue.getQueue(getApplicationContext()).add(bytes);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

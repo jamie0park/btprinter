@@ -62,6 +62,10 @@ public class BtService {
         this.mContext = context;
     }
 
+    public synchronized boolean isAvailable() {
+        return this.mAdapter != null;
+    }
+
     /**
      * Return the current connection state.
      */
@@ -233,7 +237,7 @@ public class BtService {
      */
     private void connectionFailed() {
 //         Send a failure message back to the Activity
-        EventBus.getDefault().post(new PrintMsgEvent(PrinterMsgType.MESSAGE_TOAST, "蓝牙连接失败,请重启打印机再试"));
+        EventBus.getDefault().post(new PrintMsgEvent(PrinterMsgType.MESSAGE_TOAST, "Bluetooth connection failed, please restart the printer and try again"));
         setState(STATE_NONE);
         // Start the service over to restart listening mode
         BtService.this.start();
@@ -272,7 +276,7 @@ public class BtService {
      */
     private void connectionLost() {
 //         Send a failure message back to the Activity
-        EventBus.getDefault().post(new PrintMsgEvent(PrinterMsgType.MESSAGE_TOAST, "蓝牙连接断开"));
+        EventBus.getDefault().post(new PrintMsgEvent(PrinterMsgType.MESSAGE_TOAST, "Bluetooth connection is disconnected"));
         setState(STATE_NONE);
         // Start the service over to restart listening mode
         BtService.this.start();

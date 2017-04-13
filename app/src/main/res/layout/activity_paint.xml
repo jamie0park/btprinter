@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.yefeng.night.btprinter.DrawingView
+    <com.yefeng.night.btprinter.view.DrawingView
         android:id="@+id/dv_paint"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -1,10 +1,8 @@
 package com.yefeng.night.btprinter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,7 +28,10 @@ import java.util.Set;
  * Created by yefeng on 6/1/15.
  * github:yefengfreedom
  */
-public class BondBtActivity extends BluetoothActivity {
+public class DeviceActivity extends BluetoothActivity {
+
+    // application class
+    private MyApplication myApp;
 
     private static final int OPEN_BLUETOOTH_REQUEST = 100;
     LinearLayout llBondSearch;
@@ -45,7 +46,10 @@ public class BondBtActivity extends BluetoothActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bond_bt);
+        setContentView(R.layout.activity_device);
+
+        // Application class
+        myApp = (MyApplication) getApplicationContext();
 
         llBondSearch = (LinearLayout) findViewById(R.id.ll_bond_search);
         imgBondIcon = (ImageView) findViewById(R.id.img_bond_icon);
@@ -146,7 +150,7 @@ public class BondBtActivity extends BluetoothActivity {
         if (requestCode == OPEN_BLUETOOTH_REQUEST && resultCode == Activity.RESULT_OK) {
             init();
         } else if (requestCode == OPEN_BLUETOOTH_REQUEST && resultCode == Activity.RESULT_CANCELED) {
-            showToast("You have declined using Bluetooth");
+            myApp.showToast("You have declined using Bluetooth");
             finish();
         }
     }
@@ -170,6 +174,8 @@ public class BondBtActivity extends BluetoothActivity {
         if (null == bluetoothDevice) {
             return;
         }
+
+        /*
         new AlertDialog.Builder(this)
                 .setTitle("Bind" + getPrinterName(bluetoothDevice.getName()) + "?")
                 .setMessage("Click 'OK' to bind the Bluetooth device")
@@ -202,12 +208,36 @@ public class BondBtActivity extends BluetoothActivity {
                             e.printStackTrace();
                             PrintUtil.setDefaultBluetoothDeviceAddress(getApplicationContext(), "");
                             PrintUtil.setDefaultBluetoothDeviceName(getApplicationContext(), "");
-                            showToast("Bluetooth binding failed, please try again");
+                            myApp.showToast("Bluetooth binding failed, please try again");
                         }
                     }
                 })
                 .create()
                 .show();
+        */
+
+        try {
+            BtUtil.cancelDiscovery(bluetoothAdapter);
+            PrintUtil.setDefaultBluetoothDeviceAddress(getApplicationContext(), bluetoothDevice.getAddress());
+            PrintUtil.setDefaultBluetoothDeviceName(getApplicationContext(), bluetoothDevice.getName());
+            if (null != deviceAdapter) {
+                deviceAdapter.setConnectedDeviceAddress(bluetoothDevice.getAddress());
+            }
+            if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                init();
+                goPrinterSetting();
+            } else {
+                Method createBondMethod = BluetoothDevice.class.getMethod("createBond");
+                createBondMethod.invoke(bluetoothDevice);
+            }
+            PrintQueue.getQueue(getApplicationContext()).disconnect();
+            String name = bluetoothDevice.getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+            PrintUtil.setDefaultBluetoothDeviceAddress(getApplicationContext(), "");
+            PrintUtil.setDefaultBluetoothDeviceName(getApplicationContext(), "");
+            myApp.showToast("Bluetooth binding failed, please try again");
+        }
     }
 
     private String getPrinterName(String dName) {
@@ -261,6 +291,6 @@ public class BondBtActivity extends BluetoothActivity {
 
     @Override
     public void btPairingRequest(Intent intent) {
-        showToast("The printer is being bound");
+        myApp.showToast("The printer is being bound");
     }
 }

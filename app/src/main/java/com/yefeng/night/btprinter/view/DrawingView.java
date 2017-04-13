@@ -1,4 +1,4 @@
-package com.yefeng.night.btprinter;
+package com.yefeng.night.btprinter.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

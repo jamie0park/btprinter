@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.yefeng.night.btprinter.R;
-import com.yefeng.night.btprinter.base.AppInfo;
+import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.print.PrintUtil;
 
 import java.util.ArrayList;

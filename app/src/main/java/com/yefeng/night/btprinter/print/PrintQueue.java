@@ -5,7 +5,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.yefeng.night.btprinter.base.AppInfo;
+import com.yefeng.night.btprinter.MyApplication;
+import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.bt.BtService;
 
 import java.util.ArrayList;
@@ -27,18 +28,9 @@ public class PrintQueue {
      * context
      */
     private static Context mContext;
-    /**
-     * print queue
-     */
-    private ArrayList<byte[]> mQueue;
-    /**
-     * bluetooth adapter
-     */
-    private BluetoothAdapter mAdapter;
-    /**
-     * bluetooth service
-     */
-    private BtService mBtService;
+
+    // application
+    private static MyApplication myApp;
 
 
     private PrintQueue() {
@@ -51,6 +43,9 @@ public class PrintQueue {
         if (null == mContext) {
             mContext = context;
         }
+        if (null == myApp) {
+            myApp = (MyApplication) context.getApplicationContext();
+        }
         return mInstance;
     }
 
@@ -60,11 +55,11 @@ public class PrintQueue {
      * @param bytes bytes
      */
     public synchronized void add(byte[] bytes) {
-        if (null == mQueue) {
-            mQueue = new ArrayList<byte[]>();
+        if (null == myApp.mMainQueue) {
+            myApp.mMainQueue = new ArrayList<byte[]>();
         }
         if (null != bytes) {
-            mQueue.add(bytes);
+            myApp.mMainQueue.add(bytes);
         }
         print();
     }
@@ -75,11 +70,11 @@ public class PrintQueue {
      * @param bytesList bytesList
      */
     public synchronized void add(ArrayList<byte[]> bytesList) {
-        if (null == mQueue) {
-            mQueue = new ArrayList<byte[]>();
+        if (null == myApp.mMainQueue) {
+            myApp.mMainQueue = new ArrayList<byte[]>();
         }
         if (null != bytesList) {
-            mQueue.addAll(bytesList);
+            myApp.mMainQueue.addAll(bytesList);
         }
         print();
     }
@@ -90,25 +85,25 @@ public class PrintQueue {
      */
     public synchronized void print() {
         try {
-            if (null == mQueue || mQueue.size() <= 0) {
+            if (null == myApp.mMainQueue || myApp.mMainQueue.size() <= 0) {
                 return;
             }
-            if (null == mAdapter) {
-                mAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (null == myApp.mBtAdapter) {
+                myApp.mBtAdapter = BluetoothAdapter.getDefaultAdapter();
             }
-            if (null == mBtService) {
-                mBtService = new BtService(mContext);
+            if (null == myApp.mBtService) {
+                myApp.mBtService = new BtService(mContext);
             }
-            if (mBtService.getState() != BtService.STATE_CONNECTED) {
+            if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
                 if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = mAdapter.getRemoteDevice(AppInfo.btAddress);
-                    mBtService.connect(device);
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                    myApp.mBtService.connect(device);
                     return;
                 }
             }
-            while (mQueue.size() > 0) {
-                mBtService.write(mQueue.get(0));
-                mQueue.remove(0);
+            while (myApp.mMainQueue.size() > 0) {
+                myApp.mBtService.write(myApp.mMainQueue.get(0));
+                myApp.mMainQueue.remove(0);
             }
 
         } catch (Exception e) {
@@ -121,12 +116,12 @@ public class PrintQueue {
      */
     public void disconnect() {
         try {
-            if (null != mBtService) {
-                mBtService.stop();
-                mBtService = null;
+            if (null != myApp.mBtService) {
+                myApp.mBtService.stop();
+                myApp.mBtService = null;
             }
-            if (null != mAdapter) {
-                mAdapter = null;
+            if (null != myApp.mBtAdapter) {
+                myApp.mBtAdapter = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,19 +137,19 @@ public class PrintQueue {
             if (TextUtils.isEmpty(AppInfo.btAddress)) {
                 return;
             }
-            if (null == mAdapter) {
-                mAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (null == myApp.mBtAdapter) {
+                myApp.mBtAdapter = BluetoothAdapter.getDefaultAdapter();
             }
-            if (null == mAdapter) {
+            if (null == myApp.mBtAdapter) {
                 return;
             }
-            if (null == mBtService) {
-                mBtService = new BtService(mContext);
+            if (null == myApp.mBtService) {
+                myApp.mBtService = new BtService(mContext);
             }
-            if (mBtService.getState() != BtService.STATE_CONNECTED) {
+            if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
                 if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = mAdapter.getRemoteDevice(AppInfo.btAddress);
-                    mBtService.connect(device);
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                    myApp.mBtService.connect(device);
                     return;
                 }
             } else {
@@ -176,20 +171,20 @@ public class PrintQueue {
             if (null == bytes || bytes.length <= 0) {
                 return;
             }
-            if (null == mAdapter) {
-                mAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (null == myApp.mBtAdapter) {
+                myApp.mBtAdapter = BluetoothAdapter.getDefaultAdapter();
             }
-            if (null == mBtService) {
-                mBtService = new BtService(mContext);
+            if (null == myApp.mBtService) {
+                myApp.mBtService = new BtService(mContext);
             }
-            if (mBtService.getState() != BtService.STATE_CONNECTED) {
+            if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
                 if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = mAdapter.getRemoteDevice(AppInfo.btAddress);
-                    mBtService.connect(device);
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                    myApp.mBtService.connect(device);
                     return;
                 }
             }
-            mBtService.write(bytes);
+            myApp.mBtService.write(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
