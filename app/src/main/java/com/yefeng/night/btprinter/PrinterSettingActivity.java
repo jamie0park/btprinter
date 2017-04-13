@@ -84,7 +84,7 @@ public class PrinterSettingActivity extends BluetoothActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bluetoothInit(this);
+        init(this);
     }
 
 
@@ -92,7 +92,7 @@ public class PrinterSettingActivity extends BluetoothActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_BLUETOOTH_REQUEST && resultCode == Activity.RESULT_OK) {
-            bluetoothInit(this);
+            init(this);
         } else if (requestCode == OPEN_BLUETOOTH_REQUEST && resultCode == Activity.RESULT_CANCELED) {
             myApp.showToast("You have declined using Bluetooth");
             finish();
@@ -102,7 +102,7 @@ public class PrinterSettingActivity extends BluetoothActivity {
     @Override
     public void btStatusChanged(Intent intent) {
         super.btStatusChanged(intent);
-        bluetoothInit(this);
+        init(this);
     }
 
     void bondPrinter() {
@@ -141,7 +141,7 @@ public class PrinterSettingActivity extends BluetoothActivity {
         }
     }
 
-    public static void bluetoothInit(PrinterSettingActivity activity) {
+    public static void init(PrinterSettingActivity activity) {
         if (null == activity.mAdapter) {
             activity.mAdapter = BluetoothAdapter.getDefaultAdapter();
         }
@@ -160,13 +160,13 @@ public class PrinterSettingActivity extends BluetoothActivity {
             activity.mImgPrinter.setImageResource(R.drawable.ic_bluetooth_off);
             return;
         }
-        String address = PrintUtil.getDefaultBluethoothDeviceAddress(activity.getApplicationContext());
+        String address = PrintUtil.getDefaultPrinter(activity.getApplicationContext()).getMacAddr();
         if (TextUtils.isEmpty(address)) {
             activity.mTxtPrinterTitle.setText("Bluetooth device not yet bound");
             activity.mImgPrinter.setImageResource(R.drawable.ic_bluetooth_off);
             return;
         }
-        String name = PrintUtil.getDefaultBluetoothDeviceName(activity.getApplicationContext());
+        String name = PrintUtil.getDefaultPrinter(activity.getApplicationContext()).getBtNm();
         activity.mTxtPrinterTitle.setText("Bluetooth is bound：" + name);
         activity.mTxtPrinterSummary.setText(address);
         activity.mImgPrinter.setImageResource(R.drawable.ic_bluetooth_device_connected);

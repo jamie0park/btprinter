@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.yefeng.night.btprinter.bt.BluetoothActivity;
 import com.yefeng.night.btprinter.bt.BtDeviceAdapter;
 import com.yefeng.night.btprinter.bt.BtUtil;
+import com.yefeng.night.btprinter.data.BtPrinter;
 import com.yefeng.night.btprinter.print.PrintQueue;
 import com.yefeng.night.btprinter.print.PrintUtil;
 
@@ -108,7 +109,7 @@ public class DeviceActivity extends BluetoothActivity {
             } else {
                 //The Bluetooth device is bound
                 txtBondTitle.setText(getPrinterName() + "connected");
-                String blueAddress = PrintUtil.getDefaultBluethoothDeviceAddress(this);
+                String blueAddress = PrintUtil.getDefaultPrinter(this).getMacAddr();
                 if (TextUtils.isEmpty(blueAddress)) {
                     blueAddress = "Click to search for a Bluetooth printer";
                 }
@@ -131,7 +132,7 @@ public class DeviceActivity extends BluetoothActivity {
     }
 
     private String getPrinterName() {
-        String dName = PrintUtil.getDefaultBluetoothDeviceName(this);
+        String dName = PrintUtil.getDefaultPrinter(this).getBtNm();
         if (TextUtils.isEmpty(dName)) {
             dName = "Unknown device";
         }
@@ -218,8 +219,14 @@ public class DeviceActivity extends BluetoothActivity {
 
         try {
             BtUtil.cancelDiscovery(bluetoothAdapter);
-            PrintUtil.setDefaultBluetoothDeviceAddress(getApplicationContext(), bluetoothDevice.getAddress());
-            PrintUtil.setDefaultBluetoothDeviceName(getApplicationContext(), bluetoothDevice.getName());
+
+            BtPrinter printer = new BtPrinter();
+            printer.setMacAddr(bluetoothDevice.getAddress());
+            printer.setBtNm(bluetoothDevice.getName());
+            printer.setPrintCd("");
+
+            PrintUtil.setDefaultPrinter(getApplicationContext(), printer);
+
             if (null != deviceAdapter) {
                 deviceAdapter.setConnectedDeviceAddress(bluetoothDevice.getAddress());
             }
@@ -234,8 +241,12 @@ public class DeviceActivity extends BluetoothActivity {
             String name = bluetoothDevice.getName();
         } catch (Exception e) {
             e.printStackTrace();
-            PrintUtil.setDefaultBluetoothDeviceAddress(getApplicationContext(), "");
-            PrintUtil.setDefaultBluetoothDeviceName(getApplicationContext(), "");
+            BtPrinter printer = new BtPrinter();
+            printer.setMacAddr("");
+            printer.setBtNm("");
+            printer.setPrintCd("");
+
+            PrintUtil.setDefaultPrinter(getApplicationContext(), printer);
             myApp.showToast("Bluetooth binding failed, please try again");
         }
     }
@@ -251,7 +262,7 @@ public class DeviceActivity extends BluetoothActivity {
      * go printer setting activity
      */
     private void goPrinterSetting() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PrinterSettingActivity.class);
         startActivity(intent);
         this.finish();
     }

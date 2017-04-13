@@ -6,7 +6,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.yefeng.night.btprinter.MyApplication;
-import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.bt.BtService;
 
 import java.util.ArrayList;
@@ -95,8 +94,8 @@ public class PrintQueue {
                 myApp.mBtService = new BtService(mContext);
             }
             if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
-                if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                if (!TextUtils.isEmpty(myApp.mDefaultPrinter.getMacAddr())) {
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(myApp.mDefaultPrinter.getMacAddr());
                     myApp.mBtService.connect(device);
                     return;
                 }
@@ -134,7 +133,7 @@ public class PrintQueue {
      */
     public void tryConnect() {
         try {
-            if (TextUtils.isEmpty(AppInfo.btAddress)) {
+            if (TextUtils.isEmpty(myApp.mDefaultPrinter.getMacAddr())) {
                 return;
             }
             if (null == myApp.mBtAdapter) {
@@ -147,8 +146,8 @@ public class PrintQueue {
                 myApp.mBtService = new BtService(mContext);
             }
             if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
-                if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                if (!TextUtils.isEmpty(myApp.mDefaultPrinter.getMacAddr())) {
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(myApp.mDefaultPrinter.getMacAddr());
                     myApp.mBtService.connect(device);
                     return;
                 }
@@ -178,8 +177,8 @@ public class PrintQueue {
                 myApp.mBtService = new BtService(mContext);
             }
             if (myApp.mBtService.getState() != BtService.STATE_CONNECTED) {
-                if (!TextUtils.isEmpty(AppInfo.btAddress)) {
-                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(AppInfo.btAddress);
+                if (!TextUtils.isEmpty(myApp.mDefaultPrinter.getMacAddr())) {
+                    BluetoothDevice device = myApp.mBtAdapter.getRemoteDevice(myApp.mDefaultPrinter.getMacAddr());
                     myApp.mBtService.connect(device);
                     return;
                 }

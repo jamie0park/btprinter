@@ -7,8 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.yefeng.night.btprinter.util.AppInfo;
+import com.yefeng.night.btprinter.MyApplication;
 import com.yefeng.night.btprinter.bt.BtUtil;
+import com.yefeng.night.btprinter.data.BtPrinter;
 
 import java.util.Set;
 
@@ -23,6 +24,7 @@ public class PrintUtil {
     private static final String FILENAME = "bt";
     private static final String DEFAULT_BLUETOOTH_DEVICE_ADDRESS = "default_bluetooth_device_address";
     private static final String DEFAULT_BLUETOOTH_DEVICE_NAME = "default_bluetooth_device_name";
+    private static final String DEFAULT_BLUETOOTH_DEVICE_CODE = "default_bluetooth_device_code";
 
     public static final String ACTION_PRINT_TEST = "action_print_test";
     public static final String ACTION_PRINT = "action_print";
@@ -32,27 +34,21 @@ public class PrintUtil {
 
     public static final String PRINT_EXTRA = "print_extra";
 
-    public static void setDefaultBluetoothDeviceAddress(Context mContext, String value) {
+    public static void setDefaultPrinter(Context mContext, BtPrinter printer) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(DEFAULT_BLUETOOTH_DEVICE_ADDRESS, value);
+        editor.putString(DEFAULT_BLUETOOTH_DEVICE_ADDRESS, printer.getMacAddr());
+        editor.putString(DEFAULT_BLUETOOTH_DEVICE_NAME, printer.getBtNm());
+        editor.putString(DEFAULT_BLUETOOTH_DEVICE_CODE, printer.getPrintCd());
         editor.apply();
-        AppInfo.btAddress = value;
-    }
-
-    public static void setDefaultBluetoothDeviceName(Context mContext, String value) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(DEFAULT_BLUETOOTH_DEVICE_NAME, value);
-        editor.apply();
-        AppInfo.btName = value;
+        MyApplication.mDefaultPrinter = printer;
     }
 
     public static boolean isBondPrinter(Context mContext, BluetoothAdapter bluetoothAdapter) {
         if (!BtUtil.isOpen(bluetoothAdapter)) {
             return false;
         }
-        String defaultBluetoothDeviceAddress = getDefaultBluethoothDeviceAddress(mContext);
+        String defaultBluetoothDeviceAddress = getDefaultPrinter(mContext).getMacAddr();
         if (TextUtils.isEmpty(defaultBluetoothDeviceAddress)) {
             return false;
         }
@@ -69,21 +65,22 @@ public class PrintUtil {
 
     }
 
-    public static String getDefaultBluethoothDeviceAddress(Context mContext) {
+    public static BtPrinter getDefaultPrinter(Context mContext) {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(DEFAULT_BLUETOOTH_DEVICE_ADDRESS, "");
+
+        BtPrinter printer = new BtPrinter();
+        printer.setMacAddr(sharedPreferences.getString(DEFAULT_BLUETOOTH_DEVICE_ADDRESS, ""));
+        printer.setBtNm(sharedPreferences.getString(DEFAULT_BLUETOOTH_DEVICE_NAME, ""));
+        printer.setPrintCd(sharedPreferences.getString(DEFAULT_BLUETOOTH_DEVICE_CODE, ""));
+
+        return printer;
     }
 
-    public static boolean isBondPrinterIgnoreBluetooth(Context mContext) {
-        String defaultBluetoothDeviceAddress = getDefaultBluethoothDeviceAddress(mContext);
-        return !(TextUtils.isEmpty(defaultBluetoothDeviceAddress)
-                || TextUtils.isEmpty(getDefaultBluetoothDeviceName(mContext)));
-    }
-
-    public static String getDefaultBluetoothDeviceName(Context mContext) {
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(DEFAULT_BLUETOOTH_DEVICE_NAME, "");
-    }
+//    public static boolean isBondPrinterIgnoreBluetooth(Context mContext) {
+//        String defaultBluetoothDeviceAddress = getDefaultBluethoothDeviceAddress(mContext);
+//        return !(TextUtils.isEmpty(defaultBluetoothDeviceAddress)
+//                || TextUtils.isEmpty(getDefaultBluetoothDeviceName(mContext)));
+//    }
 
     /**
      * use new api to reduce file operate

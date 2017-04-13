@@ -5,8 +5,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
-import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.bt.BtService;
+import com.yefeng.night.btprinter.data.BtPrinter;
+import com.yefeng.night.btprinter.print.PrintUtil;
+import com.yefeng.night.btprinter.util.AppInfo;
 import com.yefeng.night.btprinter.util.ToastUtil;
 
 import java.util.ArrayList;
@@ -34,9 +36,7 @@ public class MyApplication extends Application {
     public static ArrayList<byte[]> mSubQueue = new ArrayList<byte[]>();
 
 
-    public static String mPrinterTitle;
-    public static int mPrinterImgId;
-    public static boolean mBtEnable;
+    public static BtPrinter mDefaultPrinter = new BtPrinter();
 
 
     @Override
@@ -46,6 +46,7 @@ public class MyApplication extends Application {
         mContext = getApplicationContext();
 
         AppInfo.init(getApplicationContext());
+        mDefaultPrinter = PrintUtil.getDefaultPrinter(this);
 
         // bluetooth
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();

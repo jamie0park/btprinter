@@ -38,6 +38,14 @@ public class PrintService extends IntentService {
         }
         if (intent.getAction().equals(PrintUtil.ACTION_PRINT_TEST)) {
             printTest();
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            printTest();
         } else if (intent.getAction().equals(PrintUtil.ACTION_PRINT)) {
             print(intent.getByteArrayExtra(PrintUtil.PRINT_EXTRA));
         } else if (intent.getAction().equals(PrintUtil.ACTION_PRINT_TICKET)) {

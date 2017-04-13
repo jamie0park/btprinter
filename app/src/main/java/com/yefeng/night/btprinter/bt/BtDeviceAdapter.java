@@ -29,7 +29,7 @@ public class BtDeviceAdapter extends BaseAdapter {
     public BtDeviceAdapter(Context mContext, ArrayList<BluetoothDevice> mDevices) {
         this.mInflater = LayoutInflater.from(mContext);
         this.mDevices = null == mDevices ? new ArrayList<BluetoothDevice>() : mDevices;
-        mConnectedDeviceAddress = PrintUtil.getDefaultBluethoothDeviceAddress(mContext);
+        mConnectedDeviceAddress = PrintUtil.getDefaultPrinter(mContext).getMacAddr();
     }
 
     public ArrayList<BluetoothDevice> getDevices() {
